@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Recommendation System</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .news-category {
+            margin-bottom: 15px;
+        }
+
+        input[type="checkbox"] {
+            margin-right: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #news-container {
+            margin-top: 20px;
+        }
+
+        h1 {
+            color: #4caf50;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f2f2f2;
+            border-radius: 4px;
+        }
+
+        /* Responsive styles */
+        @media screen and (max-width: 600px) {
+            #container {
+                width: 90%;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+        crossorigin="anonymous">
+</head>
+
+<body>
+    <div id="container">
+        <h1>News Recommendation System</h1>
+        <label>Select your preferred news categories:</label>
+        <div class="news-category">
+            <input type="checkbox" id="sports" value="Sports">
+            <label for="sports">Sports</label>
+        </div>
+        <div class="news-category">
+            <input type="checkbox" id="technology" value="Technology">
+            <label for="technology">Technology</label>
+        </div>
+        <div class="news-category">
+            <input type="checkbox" id="world-news" value="World News">
+            <label for="world-news">World News</label>
+        </div>
+        <div class="news-category">
+            <input type="checkbox" id="business" value="Business">
+            <label for="business">Business</label>
+        </div>
+        <div class="news-category">
+            <input type="checkbox" id="politics" value="Politics">
+            <label for="politics">Politics</label>
+        </div>
+        <div class="news-category">
+            <input type="checkbox" id="entertainment" value="Entertainment">
+            <label for="entertainment">Entertainment</label>
+        </div>
+        <div class="news-category">
+            <input type="checkbox" id="health" value="Health">
+            <label for="health">Health</label>
+        </div>
+        <button onclick="getRecommendedNews()">Get Recommended News</button>
+
+        <div id="news-container"></div>
+    </div>
+
+    <script>
+        const apiKey = '4568983a4b1f43af94a1e9e4c9a1d16b'; // Replace with your actual News API key
+        // Define the news graph
+        const newsGraph = {
+        'Sports': ['Sports Technology', 'Entertainment', 'Health'],
+        'Sports Technology': ['Sports', 'Technology', 'Science'],
+        'Technology': ['Sports Technology', 'Business', 'Science', 'Health'],
+        'World News': ['Technology', 'Business', 'Politics'],
+        'Science': ['Technology', 'Sports Technology'],
+        'Business': ['World News', 'Technology'],
+        'Politics': ['World News', 'Business', 'Technology'],
+        'Entertainment': ['Sports', 'Technology', 'Health'],
+        'Health': ['Entertainment', 'Technology'],
+    };
+
+    async function getNewsArticlesFromAPI(category, country) {
+        try {
+            const response = await fetch(`https://newsapi.org/v2/top-headlines?country=${country}&category=${category}&apiKey=${apiKey}`);
+            const data = await response.json();
+
+            if (data.status === 'ok') {
+                return data.articles;
+            } else {
+                console.error('Error fetching news:', data.message);
+                return [];
+            }
+        } catch (error) {
+            console.error('Error fetching news:', error.message);
+            return [];
+        }
+    }
+
+    async function getRecommendedNews() {
+        const selectedCategories = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
+            .map(checkbox => checkbox.value);
+
+        const countryDropdown = document.getElementById('country');
+        const selectedCountry = countryDropdown ? countryDropdown.value : 'us';
+
+        const recommendedNews = await bfs(selectedCategories, selectedCountry);
+
+        const newsContainer = document.getElementById('news-container');
+        newsContainer.innerHTML = '';
+
+        recommendedNews.forEach(news => {
+            const newsRow = document.createElement('div');
+newsRow.className = 'row';
+
+news.articles.forEach(element => {
+    const container=document.getElementById("container");
+    container.style.width="100vw"
+    const newsCard = document.createElement('div');
+    newsCard.className = 'card col-md-4 mb-4';
+
+    const cardBody = document.createElement('div');
+    cardBody.className = 'card-body';
+
+    const cardImage = document.createElement('img');
+    cardImage.src = element.urlToImage;
+    cardImage.className = 'card-img-top img-fluid';
+    cardImage.alt = 'News Image';
+
+    const cardTitle = document.createElement('h5');
+    cardTitle.className = 'card-title mt-3';
+    cardTitle.textContent = !element.title ? '' : element.title.slice(0, 60);
+
+    const cardText = document.createElement('p');
+    cardText.className = 'card-text';
+    cardText.textContent = !element.description ? '' : element.description.slice(0, 120);
+
+    const readMoreLink = document.createElement('a');
+    readMoreLink.href = element.url;
+    readMoreLink.target = '_blank';
+    readMoreLink.className = 'btn btn-primary mt-3';
+    readMoreLink.textContent = 'Read more';
+
+    cardBody.appendChild(cardTitle);
+    cardBody.appendChild(cardText);
+    cardBody.appendChild(readMoreLink);
+
+    newsCard.appendChild(cardImage);
+    newsCard.appendChild(cardBody);
+    newsRow.appendChild(newsCard);
+});
+
+const newsContainer = document.getElementById('news-container');
+newsContainer.appendChild(newsRow);
+
+        });
+    }
+
+    async function bfs(selectedCategories, selectedCountry) {
+        const visited = new Set();
+        const queue = [];
+        const result = [];
+
+        selectedCategories.forEach(category => {
+            if (!visited.has(category)) {
+                visited.add(category);
+                queue.push({ category, level: 0 });
+            }
+        });
+
+        while (queue.length > 0) {
+            const current = queue.shift();
+            const articles = await getNewsArticlesFromAPI(current.category, selectedCountry);
+
+            if (articles.length > 0) {
+                result.push({ category: current.category, articles });
+            }
+
+            for (const neighbor of newsGraph[current.category]) {
+                if (!visited.has(neighbor)) {
+                    visited.add(neighbor);
+                    queue.push({ category: neighbor, level: current.level + 1 });
+                }
+            }
+        }
+
+        return result.filter(news => selectedCategories.includes(news.category));
+    }
+</script>
+</body>
+</html>

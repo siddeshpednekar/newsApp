@@ -36,3 +36,99 @@
     transform: rotate(360deg);
   }
 }
+/* Add this CSS to your component or a separate file */
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #1f1f1f; /* Dark background color */
+}
+
+#container {
+  background-color: #2b2b2b; /* Darker container background color */
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  width: 80%;
+  max-width: fit-content;
+  text-align: center;
+  color: #fff; /* Text color */
+}
+
+h1 {
+  color: #4caf50; /* Accent color */
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.news-category {
+  margin-bottom: 15px;
+}
+
+input[type="checkbox"] {
+  margin-right: 5px;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #4caf50; /* Accent color */
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #45a049; /* Darker accent color on hover */
+}
+
+#news-container {
+  margin-top: 20px;
+}
+
+.card {
+  background-color: #333; /* Dark card background color */
+  color: #fff; /* Text color */
+  border: none;
+  border-radius: 8px;
+}
+
+.card-title {
+  margin-bottom: 10px;
+  color: #4caf50; /* Accent color */
+}
+
+.card-text {
+  color: #ddd; /* Lighter text color */
+}
+
+.card-img-top {
+  border-radius: 8px 8px 0 0;
+}
+
+.btn-primary {
+  background-color: #4caf50; /* Accent color for button */
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  padding: 8px 16px;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #45a049; /* Darker accent color on hover */
+}
